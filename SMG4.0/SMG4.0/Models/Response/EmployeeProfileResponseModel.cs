@@ -1,16 +1,11 @@
-﻿namespace SMG4._0.Models.DTO
+﻿namespace SMG4._0.Models.Response
 {
-    public class EmployeeDTO
+    public class EmployeeProfileResponseModel
     {
-        public long Id { get; set; }
         public string FirstName { get; set; } = "";
         public string LastName { get; set; } = "";
         public string Email { get; set; } = "";
         public DateOnly DateOfBirth { get; set; }
         public DateOnly EmploymentDate { get; set; }
-        public bool IsActive { get; set; }
-
-        public byte[]? PasswordHash { get; set; }
-        public byte[]? PasswordSalt { get; set; }
     }
 }

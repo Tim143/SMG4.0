@@ -4,6 +4,15 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SMG4._0.Helpers;
+using SMG4._0.Services;
+using Serilog;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using SMG4._0.Helpers.Validators;
+using AutoMapper;
+using SMG4._0.Mapping;
+using SMG4._0.Repositories;
+using System.Globalization;
 
 namespace SMG4._0
 {
@@ -61,6 +70,27 @@ namespace SMG4._0
 
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
 
+            builder.Services.AddScoped<IAuthenticationHelper, AuthenticationHelper>();
+            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+            builder.Services.AddScoped<IEmployeeProfileService, EmployeeProfileService>();
+            builder.Services.AddScoped<IEmployeeProfileRepository, EmployeeProfileRepository>();
+
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            builder.Services.AddSingleton(mapper);
+
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddValidatorsFromAssemblyContaining<AuthenticationRequestModelValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<ActivateEmployeeRequestModelValidator>();
+
+            builder.Host.UseSerilog();
+
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -71,9 +101,8 @@ namespace SMG4._0
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseStaticFiles();
 
             app.MapControllers();
 
