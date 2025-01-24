@@ -21,6 +21,6 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore SMG4.0/SMG4.0.sln -c Release -o out
+      run: dotnet restore SMG4.0/SMG4.0.sln
     - name: Build
       run: dotnet build --no-restore
