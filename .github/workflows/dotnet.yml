@@ -23,4 +23,4 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore SMG4.0/SMG4.0.sln
     - name: Build
-      run: dotnet build
+      run: dotnet build SMG4.0/SMG4.0.sln -c Release
